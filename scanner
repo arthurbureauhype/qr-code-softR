@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan QR Code pour préremplir SoftR</title>
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <style>
+    #qr-reader { width: 300px; margin-bottom: 20px; display: none; }
+    input { margin-bottom: 10px; width: 100%; padding: 5px; }
+    button { padding: 10px 15px; cursor: pointer; }
+    #error-message { color: red; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Scanner le QR Code</h1>
+  <button id="start-button">Lancer la caméra</button>
+  <div id="qr-reader"></div>
+  <p id="error-message"></p>
+
+  <script>
+    function handleScanSuccess(decodedText, decodedResult) {
+      console.log("QR Code scanné :", decodedText);
+      alert("Données du QR Code : " + decodedText);
+      html5QrCode.stop(); // Arrête la caméra après un scan réussi
+      document.getElementById('qr-reader').style.display = 'none';
+      document.getElementById('start-button').style.display = 'block';
+    }
+
+    const html5QrCode = new Html5Qrcode("qr-reader");
+
+    document.getElementById('start-button').addEventListener('click', () => {
+      document.getElementById('qr-reader').style.display = 'block';
+      document.getElementById('start-button').style.display = 'none';
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        handleScanSuccess
+      ).catch(err => {
+        console.error("Erreur d'accès à la caméra :", err);
+        document.getElementById('error-message').textContent = `Erreur d'accès à la caméra : ${err}`;
+        document.getElementById('qr-reader').style.display = 'none';
+        document.getElementById('start-button').style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>
