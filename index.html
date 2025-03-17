@@ -43,6 +43,27 @@
         document.getElementById('start-button').style.display = 'block';
       });
     });
+    
+    function handleScanSuccess(decodedText, decodedResult) {
+    console.log("QR Code scanné :", decodedText);
+  
+    const locationData = getLocationAndTime(); // Géolocalisation et horodatage
+  
+    // Envoyer les données vers SoftR
+    window.parent.postMessage({
+      type: 'fillSoftR',
+      data: {
+        vehicule: decodedText, 
+        geoloc: `${locationData.latitude}, ${locationData.longitude}`, 
+        horodatage: locationData.timestamp
+      }
+    }, '*');
+    
+    html5QrCode.stop(); // Arrêter la caméra
+}
+
+    
+    
   </script>
 </body>
 </html>
